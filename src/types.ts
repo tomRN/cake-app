@@ -8,3 +8,5 @@ export interface PostCake {
 export interface Cake extends PostCake {
     ID: string
 }
+
+export type DeleteStatus = "NONE" | "PENDING" | "SUCCESS" | "ERROR"
