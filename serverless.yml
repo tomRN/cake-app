@@ -1,0 +1,109 @@
+# Configuration file for Serverless service
+
+# Name of the service. Creates a CloudFormation stack under the same name.
+service: ${file(package.json):name}
+
+# Configure the service provider.
+provider:
+    name: aws
+    runtime: nodejs10.x
+    profile: ${opt:profile, 'tomn-personal'}
+    region: ${opt:region, 'eu-west-2'}
+    stage: ${opt:stage, 'dev'}
+
+# What files to include/exclude from deployment package
+package:
+    execlude:
+        - ./**
+    include:
+        - build/**
+        - node_modules/**
+
+# Plugin configuration
+plugins:
+    - serverless-s3-deploy
+    - serverless-cloudfront-invalidate
+
+custom:
+    state: ${opt:stage, 'dev'}
+    appBucket: "${self:service}-${self:provider.stage}"
+    assets:
+      auto: true
+      targets:
+        - bucket: ${self:custom.appBucket}
+          files:
+            - source: build/
+              globs: '**/*'
+    cloudfrontInvalidate:
+        distributionIdKey: 'CdnDistributionId'
+        items:
+            - '/index.html'
+
+# CloudFormation resources
+resources:
+    Resources:
+        AppBucket:
+            Type: AWS::S3::Bucket
+            Properties:
+                BucketName: ${self:custom.appBucket}
+                PublicAccessBlockConfiguration:
+                    BlockPublicAcls: true
+                    IgnorePublicAcls: true
+                    BlockPublicPolicy: false
+                    RestrictPublicBuckets: false
+                WebsiteConfiguration:
+                    IndexDocument: index.html
+        AppBucketPolicy:
+            Type: AWS::S3::BucketPolicy
+            Properties:
+                Bucket: !Ref AppBucket
+                PolicyDocument:
+                    Version: '2012-10-17'
+                    Statement:
+                        - Effect: Allow
+                          Principal: '*'
+                          Action: s3:GetObject
+                          Resource: !Join [/, [!GetAtt AppBucket.Arn, '*']]
+
+        CloudFrontDistribution:
+            Type: AWS::CloudFront::Distribution
+            Properties:
+                DistributionConfig:
+                    CustomErrorResponses:
+                        - ErrorCachingMinTTL: 300
+                          ErrorCode: 403
+                          ResponseCode: 200
+                          ResponsePagePath: /index.html
+                    # Origin Settings
+                    Origins:
+                        - DomainName: !GetAtt AppBucket.DomainName
+                          Id: !GetAtt AppBucket.DomainName
+                          CustomOriginConfig:
+                              HTTPPort: 80
+                              HTTPSPort: 443
+                              OriginProtocolPolicy: https-only
+
+                    # Default Cache Behavior Settings
+                    DefaultCacheBehavior:
+                        TargetOriginId: !GetAtt AppBucket.DomainName
+                        ViewerProtocolPolicy: redirect-to-https
+                        AllowedMethods: &allowed_methods
+                            - GET
+                            - HEAD
+                        CachedMethods: *allowed_methods
+                        ForwardedValues:
+                            QueryString: false
+                        Compress: false
+
+                    # Distribution Settings
+                    PriceClass: PriceClass_All
+                    ViewerCertificate:
+                        MinimumProtocolVersion: TLSv1.2_2018
+                        CloudFrontDefaultCertificate: true
+                    HttpVersion: http2
+                    DefaultRootObject: index.html
+                    Enabled: true
+    Outputs:
+        CdnDistributionId:
+            Description: CDN distribution ID.
+            Value: !Ref CloudFrontDistribution
