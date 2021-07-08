@@ -19,9 +19,34 @@ describe("Cake List Item Component", () => {
 
     it('Renders the name', () => {
         render(<CakeListItem cake={chocolateCake} />);
-        const nameElement = screen.getByText(/"Chocolate Cake"/i);
+        const nameElement = screen.getByText(/Chocolate Cake/i);
         expect(nameElement).toBeInTheDocument();
     });
+
+    it('Renders the comment', () => {
+        render(<CakeListItem cake={chocolateCake} />);
+        const nameElement = screen.getByText(/A delicious chocolate based cake/i);
+        expect(nameElement).toBeInTheDocument();
+    });
+
+
+    it('Renders a number of filled stars equal to the yum factor', () => {
+        render(<CakeListItem cake={chocolateCake} />);
+        const filledStars = screen.getAllByText("★")
+        expect(filledStars.length).toBe(4);
+    })
+
+    it('Renders a number of un-filled stars equal to 5 minus the yum factor', () => {
+        render(<CakeListItem cake={chocolateCake} />);
+        const filledStars = screen.getAllByText("☆")
+        expect(filledStars.length).toBe(1);
+    })
+
+    it('Renders the image of the cake', () => {
+        render(<CakeListItem cake={chocolateCake} />);
+        const imageElem = screen.getByAltText("A picture of the cake")
+        expect(imageElem).toHaveAttribute("src", chocolateCake.imageURL);
+    })
 })
 
 
