@@ -3,10 +3,13 @@
 ## Blog as I'm writing this
 + Set up a gitignore, run create-react-app set up with typescript
 + Sort the deployment via serverless deploying to S3 with cloudfront
-+ Get the hello-world react app building and deploying
++ Get the hello-world react app building and deploying (deployed to d1es4pfegyj6kc.cloudfront.net)
 + Get a basic POC jest test running on the app component
 + Get a basic cypress test running
-+ Do a basic hand sketch design of the ui should look like
++ Add 'testing-library' for cypress
++ Do a basic sketch design of the ui should look like
++ Plan out component tree
++ Develop components testing as we go
 
 _____
 

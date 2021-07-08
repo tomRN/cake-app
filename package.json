@@ -18,11 +18,12 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3030 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-dev": "REACT_APP_STAGE=dev npm run build && sls deploy --stage dev --profile tomn-personal"
+    "deploy-dev": "REACT_APP_STAGE=dev npm run build && sls deploy --stage dev",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +44,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/cypress": "^7.0.6",
+    "cypress": "^7.7.0",
     "serverless": "^2.51.1",
     "serverless-s3-deploy": "^0.10.1"
   }

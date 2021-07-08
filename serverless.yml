@@ -13,7 +13,7 @@ provider:
 
 # What files to include/exclude from deployment package
 package:
-    execlude:
+    exclude:
         - ./**
     include:
         - build/**
@@ -35,8 +35,8 @@ custom:
             - source: build/
               globs: '**/*'
     cloudfrontInvalidate:
-        distributionIdKey: 'CdnDistributionId'
-        items:
+        - distributionIdKey: 'CdnDistributionId'
+          items:
             - '/index.html'
 
 # CloudFormation resources
