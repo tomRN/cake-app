@@ -9,6 +9,23 @@
 + Add 'testing-library' for cypress
 + Do a basic sketch design of the ui should look like
 + Plan out component tree
+    + App component
+        + Shows a list of cakes (CakeListItem)
+        + Shows the list of cakes it retrieved, or 'no cakes, try adding one' if none found
+        + Entering text in the search box limits the cakes to ones whose name contain the text
+        + Clicking add cake pops up an add cake modal (CakeAddModal)
+    + CakeListItem
+        + shows the image, name, comment, and rating of the cake
+        + clicking the delete icon pops up a (CakeDeleteModal)
+    + CakeAddModal
+        + Has form fields to add a cake
+        + Cancel button hides the modal
+        + Create button posts up to create the cake
+    + CakeDeleteModal
+        + Displays 'are you sure message'
+        + Cancel hides the modal
+        + Delete posts up to delete the cake
++ Add react bootstrap
 + Develop components testing as we go
 
 _____
