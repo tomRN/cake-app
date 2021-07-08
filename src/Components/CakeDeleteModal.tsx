@@ -1,5 +1,5 @@
 import React from 'react';
-import { DeleteStatus } from '../types';
+import { RequestStatus } from '../types';
 import { Button, Modal } from 'react-bootstrap'
 
 
@@ -8,7 +8,7 @@ interface CakeDeleteModalProps {
     onConfirm: () => void
     onCancel: () => void
     cakeName: string
-    deleteStatus: DeleteStatus
+    deleteStatus: RequestStatus
 }
 
 const CakeDeleteModal = (props: CakeDeleteModalProps) => {

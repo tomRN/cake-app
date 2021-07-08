@@ -9,4 +9,4 @@ export interface Cake extends PostCake {
     ID: string
 }
 
-export type DeleteStatus = "NONE" | "PENDING" | "SUCCESS" | "ERROR"
+export type RequestStatus = "NONE" | "PENDING" | "SUCCESS" | "ERROR"
