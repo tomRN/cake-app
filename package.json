@@ -5,7 +5,6 @@
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
     "@types/jest": "^26.0.24",
     "@types/node": "^12.20.16",
     "@types/react": "^17.0.14",
@@ -47,6 +46,7 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "^7.0.6",
+    "@testing-library/user-event": "^12.8.3",
     "cypress": "^7.7.0",
     "serverless": "^2.51.1",
     "serverless-s3-deploy": "^0.10.1"
