@@ -6,6 +6,8 @@ export const useCakes = () => {
     const [cakes, setCakes] = useState<Cake[]>([]);
     const [initialFetchStatus, setInitialFetchStatus] = useState<RequestStatus>("NONE");
     const [postCakeStatus, setPostCakeStatus] = useState<RequestStatus>("NONE");
+    const [deleteCakeStatus, setDeleteCakeStatus] = useState<RequestStatus>("NONE");
+
 
     useEffect(() => {
         if (initialFetchStatus === "NONE") {
@@ -33,12 +35,29 @@ export const useCakes = () => {
 
     const resetPostCakeStatus = () => { setPostCakeStatus("NONE") }
 
+    const deleteCake = async (cakeID: string) => {
+        setDeleteCakeStatus("PENDING");
+        try {
+            let newCake = await api.deleteCake(cakeID);
+            setDeleteCakeStatus("SUCCESS");
+            setCakes([...cakes.filter(x => x.ID !== cakeID)]);
+        } catch (e) {
+            setDeleteCakeStatus("ERROR")
+        }
+    }
+
+    const resetDeleteCakeStatus = () => { setDeleteCakeStatus("NONE") }
+
+
     return {
         cakes,
         initialFetchStatus,
         postCake,
         postCakeStatus,
-        resetPostCakeStatus
+        resetPostCakeStatus,
+        deleteCake,
+        deleteCakeStatus,
+        resetDeleteCakeStatus
     }
 
 }

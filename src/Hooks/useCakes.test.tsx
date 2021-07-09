@@ -193,6 +193,124 @@ describe("The Hook for interacting with our cakes API", () => {
         });
     })
 
+
+    it("After a successfull initial fetch, lets us delete a cake, sets the status correctly to pending", async () => {
+        //@ts-ignore
+        api.getCakes = jest.fn(() => {
+            return Promise.resolve(testCakes);
+        })
+
+        //@ts-ignore
+        api.delete = jest.fn(async (cakeID: string) => {
+            await wait(100)
+            return {}
+        })
+
+        //Initial fetch done
+        const { result, waitForNextUpdate } = renderHook(() => useCakes());
+        await act(async () => {
+            await waitForNextUpdate();
+            expect(result.current.initialFetchStatus).toBe("SUCCESS");
+            expect(result.current.postCakeStatus).toBe("NONE");
+
+        });
+
+        //Delete our cake
+        await act(async () => {
+            let postPromise = result.current.deleteCake(testCakes[0].ID);
+            await waitForNextUpdate();
+            expect(result.current.deleteCakeStatus).toBe("PENDING");
+        });
+    })
+
+    it("After a successfull initial fetch, lets us delete a cake, removes it from the cake list, sets status to success", async () => {
+        //@ts-ignore
+        api.getCakes = jest.fn(() => {
+            return Promise.resolve(testCakes);
+        })
+
+        //@ts-ignore
+        api.deleteCake = jest.fn(async (cakeID: string) => {
+            return {}
+        })
+
+        //Initial fetch done
+        const { result, waitForNextUpdate } = renderHook(() => useCakes());
+        await act(async () => {
+            await waitForNextUpdate();
+            expect(result.current.initialFetchStatus).toBe("SUCCESS");
+            expect(result.current.postCakeStatus).toBe("NONE");
+        });
+
+        //Delete our cake
+        await act(async () => {
+            let postPromise = result.current.deleteCake(testCakes[0].ID);
+            await waitForNextUpdate();
+            expect(result.current.deleteCakeStatus).toBe("SUCCESS");
+            expect(result.current.cakes.length).toBe(1);
+            expect(result.current.cakes.find(x => x.ID === testCakes[0].ID)).toBeFalsy();
+        });
+    })
+
+    it("After a successfull initial fetch, lets us delete a cake, on an error, correcty sets status", async () => {
+        //@ts-ignore
+        api.getCakes = jest.fn(() => {
+            return Promise.resolve(testCakes);
+        })
+
+        //@ts-ignore
+        api.deleteCake = jest.fn(async (cakeID: string) => {
+            throw new Error("API Error")
+        })
+
+        //Initial fetch done
+        const { result, waitForNextUpdate } = renderHook(() => useCakes());
+        await act(async () => {
+            await waitForNextUpdate();
+            expect(result.current.initialFetchStatus).toBe("SUCCESS");
+            expect(result.current.deleteCakeStatus).toBe("NONE");
+        });
+
+        //Delete our cake
+        await act(async () => {
+            let postPromise = result.current.deleteCake(testCakes[0].ID);
+            await waitForNextUpdate();
+            expect(result.current.deleteCakeStatus).toBe("ERROR");
+            expect(result.current.cakes.length).toBe(2);
+        });
+    })
+
+    it("Resets the deleteCake status to NONE when we call the method", async () => {
+        //@ts-ignore
+        api.getCakes = jest.fn(() => {
+            return Promise.resolve(testCakes);
+        })
+        //@ts-ignore
+        api.deleteCake = jest.fn(async (cakeID: string) => {
+            throw new Error("API error")
+        })
+
+        //Initial fetch done
+        const { result, waitForNextUpdate } = renderHook(() => useCakes());
+        await act(async () => {
+            await waitForNextUpdate();
+            expect(result.current.deleteCakeStatus).toBe("NONE");
+        });
+
+        //Delete our cake
+        await act(async () => {
+            let postPromise = result.current.deleteCake(testCakes[0].ID);
+            await waitForNextUpdate();
+            expect(result.current.deleteCakeStatus).toBe("ERROR");
+        });
+
+        await act(async () => {
+            result.current.resetDeleteCakeStatus()
+            await waitForNextUpdate();
+            expect(result.current.deleteCakeStatus).toBe("NONE");
+        });
+    })
+
 })
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(Promise.resolve, ms))
