@@ -170,6 +170,45 @@ describe("Cake Add Modal Component", () => {
 
     });
 
+    it("Shows a success message when it sees a success", () => {
+        render(<CakeAddModal
+            addStatus="SUCCESS"
+            onAdd={() => { ; }}
+            onCancel={() => { ; }}
+        />);
+        const messageElem = screen.getByText(/Your cake has been added/i);
+        expect(messageElem).toBeInTheDocument();
+
+    });
+
+    it("Shows ONLY 'done' button after a success, and the done button closes the modal", () => {
+        render(<CakeAddModal
+            addStatus="SUCCESS"
+            onAdd={() => { ; }}
+            onCancel={() => { ; }}
+        />);
+        const doneElem = screen.getByRole("button", { name: /done/i });
+        const cancelElem = screen.queryByRole("button", { name: /cancel/i })
+        expect(cancelElem).not.toBeInTheDocument();
+        const saveElem = screen.queryByRole("button", { name: /save/i })
+        expect(saveElem).not.toBeInTheDocument();
+    });
+
+
+
+    it("Shows a 'done' button after a success, and the done button closes the modal", () => {
+        const mockOnCancel = jest.fn();
+        render(<CakeAddModal
+            addStatus="SUCCESS"
+            onAdd={() => { ; }}
+            onCancel={mockOnCancel}
+        />);
+        const doneElem = screen.getByRole("button", { name: /done/i })
+        expect(mockOnCancel).toHaveBeenCalledTimes(0);
+        userEvent.click(doneElem);
+        expect(mockOnCancel).toHaveBeenCalledTimes(1);
+    });
+
     it("Shows a generic error message if adding the cake fails", () => {
         render(<CakeAddModal
             addStatus="ERROR"
