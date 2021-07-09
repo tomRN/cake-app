@@ -9,7 +9,7 @@ interface CakeListProps {
 
 const CakeListItem = (props: CakeListProps) => {
     return <>
-        <Card>
+        <Card className="mb-4">
             <Card.Header className="text-right p-0">
                 <Button name="delete" size="sm" variant="" onClick={(evt: any) => { props.onDelete(props.cake.ID) }}><span className="sr-only">delete</span>❌</Button>
             </Card.Header>

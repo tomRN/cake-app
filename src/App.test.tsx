@@ -4,6 +4,6 @@ import App from './App';
 
 test('renders the text "cakes" somewhere', () => {
   render(<App />);
-  const titleElement = screen.getByText(/Cakes/i);
-  expect(titleElement).toBeInTheDocument();
+  const titleElement = screen.getAllByText(/Cakes/i);
+  expect(titleElement.length).toBeGreaterThanOrEqual(1);
 });
