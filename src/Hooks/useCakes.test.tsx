@@ -162,6 +162,37 @@ describe("The Hook for interacting with our cakes API", () => {
         });
     })
 
+    it("Resets the postCake status to NONE when we call the method", async () => {
+        //@ts-ignore
+        api.getCakes = jest.fn(() => {
+            return Promise.resolve(testCakes);
+        })
+        //@ts-ignore
+        api.postCake = jest.fn(async (cake: any) => {
+            throw new Error("API error")
+        })
+
+        //Initial fetch done
+        const { result, waitForNextUpdate } = renderHook(() => useCakes());
+        await act(async () => {
+            await waitForNextUpdate();
+            expect(result.current.postCakeStatus).toBe("NONE");
+        });
+
+        //Post up our cake
+        await act(async () => {
+            let postPromise = result.current.postCake(newCake);
+            await waitForNextUpdate();
+            expect(result.current.postCakeStatus).toBe("ERROR");
+        });
+
+        await act(async () => {
+            result.current.resetPostCakeStatus()
+            await waitForNextUpdate();
+            expect(result.current.postCakeStatus).toBe("NONE");
+        });
+    })
+
 })
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(Promise.resolve, ms))

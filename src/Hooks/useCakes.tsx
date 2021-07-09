@@ -31,11 +31,14 @@ export const useCakes = () => {
         }
     }
 
+    const resetPostCakeStatus = () => { setPostCakeStatus("NONE") }
+
     return {
         cakes,
         initialFetchStatus,
         postCake,
-        postCakeStatus
+        postCakeStatus,
+        resetPostCakeStatus
     }
 
 }
