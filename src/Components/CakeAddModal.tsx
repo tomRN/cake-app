@@ -23,9 +23,9 @@ const CakeAddModal = (props: CakeAddModalProps) => {
 
     return <Modal centered show={true} onHide={() => props.onCancel()} >
         <Form onSubmit={(e: React.SyntheticEvent) => { e.preventDefault(); handleSubmit() }}>
-            <Modal.Header closeButton></Modal.Header>
+            <Modal.Header closeButton><h4 className="mb-0">Add a New Cake</h4></Modal.Header>
             <Modal.Body className="px-4">
-                <h4 className="mb-4 mt-2">Add a New Cake</h4>
+
                 {props.addStatus === "SUCCESS" ?
                     <h5 className="text-center">Your cake has been added</h5>
                     : props.addStatus === "PENDING" ?
@@ -52,6 +52,8 @@ const CakeAddModal = (props: CakeAddModalProps) => {
                                 <Col>
                                     <Form.Control required type="text" id="imageURL" pattern="(http:|https:)+[^\s]+[\w]" placeholder="Paste the URL of an image of this cake" value={cake.imageURL} onChange={(evt) => { setCake({ ...cake, imageURL: evt.target.value }) }} />
                                     <Form.Text className="text-muted">(a valid url starts with 'http://' or 'https://')</Form.Text>
+                                    <Form.Text className="text-muted">try https://via.placeholder.com/400x300.png</Form.Text>
+
                                 </Col>
                             </Form.Row>
                             <Form.Row className="mt-2">
