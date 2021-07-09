@@ -5,7 +5,7 @@ import CakeListItem from './Components/CakeListItem';
 import CakeDeleteModal from './Components/CakeDeleteModal';
 import CakeAddModal from './Components/CakeAddModal';
 import useCakes from './Hooks/useCakes';
-import { PostCake } from './types'
+import { PostCake, Cake } from './types'
 
 function App() {
   const {
@@ -13,9 +13,14 @@ function App() {
     initialFetchStatus,
     postCake,
     postCakeStatus,
-    resetPostCakeStatus
+    resetPostCakeStatus,
+    deleteCake,
+    deleteCakeStatus,
+    resetDeleteCakeStatus
   } = useCakes();
   const [showAddCakeModal, setShowAddCakeModal] = useState<boolean>(false);
+  const [showDeleteCakeModal, setShowDeleteCakeModal] = useState<boolean>(false);
+  const [cakeToDelete, setCakeToDelete] = useState<Cake | undefined>(undefined);
 
   const onAddClick = (evt: any) => {
     setShowAddCakeModal(true);
@@ -31,6 +36,12 @@ function App() {
         <h5>Cakes</h5>
         {initialFetchStatus === "SUCCESS" &&
           <>
+            {showDeleteCakeModal && <CakeDeleteModal
+              cakeName={cakeToDelete!.name}
+              deleteStatus={deleteCakeStatus}
+              onConfirm={() => { deleteCake(cakeToDelete!.ID) }}
+              onCancel={() => { resetDeleteCakeStatus(); setShowDeleteCakeModal(false); setCakeToDelete(undefined); }}
+            />}
             {showAddCakeModal && <CakeAddModal
               addStatus={postCakeStatus}
               onAdd={(cake: PostCake) => { postCake(cake) }}
@@ -39,10 +50,11 @@ function App() {
             <Row className="mb-4 mt-2">
               <Button variant="success" onClick={onAddClick}>+ Add a cake</Button>
             </Row>
+            {cakes.length === 0 && <h3 className="text-muted text-center">No cakes, try adding one!</h3>}
             {cakes.map((cake) => <CakeListItem
               cake={cake}
               key={cake.ID}
-              onDelete={() => { ; }}
+              onDelete={() => { setCakeToDelete(cake); setShowDeleteCakeModal(true); }}
             />
             )}
           </>}
