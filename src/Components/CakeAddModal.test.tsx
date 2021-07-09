@@ -113,6 +113,83 @@ describe("Cake Add Modal Component", () => {
 
     });
 
-    /* Validation tests etc. etc. */
+    /* With more time we would add more detailed tests for the validation tests etc. etc. */
+
+    it("Calls onAdd with the data we added when we hit Save", () => {
+
+        const mockOnAdd = jest.fn();
+        render(<CakeAddModal
+            addStatus="NONE"
+            onAdd={mockOnAdd}
+            onCancel={() => { ; }}
+        />);
+        expect(mockOnAdd).toHaveBeenCalledTimes(0);
+        const nameElem = screen.getByPlaceholderText(/enter a name for this cake/i);
+        const commentElem = screen.getByPlaceholderText(/type a comment about this cake/i);
+        const imageElem = screen.getByPlaceholderText(/paste the URL of an image of this cake/i);
+        const yumElem = screen.getByLabelText(/Select the yum factor for this cake/i);
+        const saveElem = screen.getByRole("button", { name: /save/i });
+
+        userEvent.type(nameElem, "New Cake");
+        userEvent.type(commentElem, "A new cake to eat");
+        userEvent.type(imageElem, "http://someimageurl.com");
+        userEvent.selectOptions(yumElem, "3");
+        userEvent.click(saveElem);
+
+        expect(mockOnAdd).toHaveBeenCalledTimes(1);
+        expect(mockOnAdd).toHaveBeenLastCalledWith({
+            name: "New Cake",
+            comment: "A new cake to eat",
+            imageURL: "http://someimageurl.com",
+            yumFactor: 3
+        })
+
+    });
+
+    it("Shows a saving message while the save is pending", () => {
+        render(<CakeAddModal
+            addStatus="PENDING"
+            onAdd={() => { ; }}
+            onCancel={() => { ; }}
+        />);
+        const messageElem = screen.getByText(/Saving your cake, just a sec.../i);
+        expect(messageElem).toBeInTheDocument();
+
+    });
+
+    it("Hides the buttons while the save is pending", () => {
+        render(<CakeAddModal
+            addStatus="PENDING"
+            onAdd={() => { ; }}
+            onCancel={() => { ; }}
+        />);
+        const cancelElem = screen.queryByRole("button", { name: /cancel/i })
+        expect(cancelElem).not.toBeInTheDocument();
+        const saveElem = screen.queryByRole("button", { name: /save/i })
+        expect(saveElem).not.toBeInTheDocument();
+
+    });
+
+    it("Shows a generic error message if adding the cake fails", () => {
+        render(<CakeAddModal
+            addStatus="ERROR"
+            onAdd={() => { ; }}
+            onCancel={() => { ; }}
+        />);
+        const messageElem = screen.getByText(/Sorry, there was a problem saving your cake/i);
+        expect(messageElem).toBeInTheDocument();
+    });
+
+    it("Shows both buttons if there was an error so you can retry adding the cake", () => {
+        render(<CakeAddModal
+            addStatus="ERROR"
+            onAdd={() => { ; }}
+            onCancel={() => { ; }}
+        />);
+        const cancelElem = screen.queryByRole("button", { name: /cancel/i })
+        expect(cancelElem).toBeInTheDocument();
+        const saveElem = screen.queryByRole("button", { name: /save/i })
+        expect(saveElem).toBeInTheDocument();
+    });
 
 })
