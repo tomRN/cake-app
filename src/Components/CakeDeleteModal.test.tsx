@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import CakeDeleteModal from './CakeDeleteModal';
+import { EPERM } from 'constants';
 
 describe("Cake Delete Modal Component", () => {
 
@@ -150,6 +151,33 @@ describe("Cake Delete Modal Component", () => {
         expect(mockOnCancel).toHaveBeenCalledTimes(1);
 
     });
+
+
+    it("Shows a success message if the delete succeeds", () => {
+        render(<CakeDeleteModal
+            onConfirm={() => { ; }}
+            onCancel={() => { ; }}
+            deleteStatus="SUCCESS"
+            cakeName="Test Cake"
+        />);
+        const messageElement = screen.getByText(/Test Cake has been deleted/i);
+        expect(messageElement).toBeInTheDocument();
+    })
+
+    it("When the delete succeeds, shows a done button, no other buttons", () => {
+        render(<CakeDeleteModal
+            onConfirm={() => { ; }}
+            onCancel={() => { ; }}
+            deleteStatus="SUCCESS"
+            cakeName="Test Cake"
+        />);
+        const doneElem = screen.queryByRole("button", { name: /done/i })
+        const cancelElem = screen.queryByRole("button", { name: /cancel/i })
+        const deleteElem = screen.queryByRole("button", { name: /delete/i })
+        expect(cancelElem).not.toBeInTheDocument();
+        expect(deleteElem).not.toBeInTheDocument();
+        expect(doneElem).toBeInTheDocument();
+    })
 
 })
 
