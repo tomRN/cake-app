@@ -3,7 +3,7 @@ import { PostCake, Cake } from '../types';
 
 const getBaseURL = () => {
     if (process.env.REACT_APP_STAGE === "dev" || !process.env.REACT_APP_STAGE) {
-        if (process.env.TEST_LOCAL) return "http://localhost:4040/dev";
+        if (process.env.REACT_APP_TEST_LOCAL) return "http://localhost:4040/dev";
         return "https://muk48t5ptj.execute-api.eu-west-2.amazonaws.com/dev";
     }
     if (process.env.REACT_APP_STAGE === "prod") throw new Error("The api has not been deployed to production yet")

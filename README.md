@@ -1,5 +1,38 @@
 # cake-app
 
+## Deployed version
+
+The URL of the dev version is https://d1es4pfegyj6kc.cloudfront.net
+## Running locally
+
+`npm i`
+
+`npm run start` 
+
+to run the app locally.
+
+
+by default the app talks to the dev urls, to talk to a locally running api instance, instead run
+
+`npm run start-with-local-api`
+
+## Testing
+
+`npm run test`
+
+Will start the jest test console to run unit tests
+
+`npm run cypress`
+
+Will start cypress which is configured to run a basic smoke test.
+
+Once opened click the *basic.spec.ts* to run the basic smoke tests on your machine. This could easily be automated as a headless test to run as part of CI/CD
+
+## Testing philosophy
++ Basic unit tests are included on the react components
++ The 'main' app component has not been unit tested due to time constraints, the e2e tests cover most of the functionality
++ Some simple files like the api are not tested
+
 ## Blog as I'm writing this
 + Set up a gitignore, run create-react-app set up with typescript
 + Sort the deployment via serverless deploying to S3 with cloudfront
@@ -27,6 +60,9 @@
         + Delete posts up to delete the cake
 + Add react bootstrap
 + Develop components testing as we go
++ Write tests first, then make components pass
++ Do same for hooks (hook testing is less straightforward)
++ Leave unit testing the main component and just rely on e2e to catch any obvious mistakes
 
 _____
 
